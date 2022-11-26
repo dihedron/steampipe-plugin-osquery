@@ -5,9 +5,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 //// TABLE DEFINITION
@@ -64,8 +64,8 @@ func getOSQueryCustom(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrat
 
 	setLogLevel(ctx, d)
 
-	hostname := d.KeyColumnQuals["hostname"].GetStringValue()
-	query := d.KeyColumnQuals["query"].GetStringValue()
+	hostname := d.EqualsQuals["hostname"].GetStringValue()
+	query := d.EqualsQuals["query"].GetStringValue()
 	plugin.Logger(ctx).Debug("running query", "query", query, "hostname", hostname)
 
 	connection, err := getSSHConnection(ctx, d, hostname, false)
@@ -74,12 +74,16 @@ func getOSQueryCustom(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrat
 		return nil, err
 	}
 
+	plugin.Logger(ctx).Debug("connection retrieved")
+
 	session, err := connection.NewSession()
 	if err != nil {
 		plugin.Logger(ctx).Error("error creating session", "error", err)
 		return nil, err
 	}
 	defer session.Close()
+
+	plugin.Logger(ctx).Debug("session open")
 
 	var output bytes.Buffer
 	session.Stdout = &output
@@ -88,6 +92,8 @@ func getOSQueryCustom(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrat
 		plugin.Logger(ctx).Error("error running query", "command", command, "error", err)
 		return nil, err
 	}
+
+	plugin.Logger(ctx).Debug("command run")
 
 	// result := users.Get(client, id)
 	// var user *users.User

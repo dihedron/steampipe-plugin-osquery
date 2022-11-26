@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -21,6 +21,8 @@ func getSSHConnection(ctx context.Context, d *plugin.QueryData, hostname string,
 		return cachedData.(*ssh.Client), nil
 	}
 
+	plugin.Logger(ctx).Debug("creating new connection")
+
 	osqueryConfig := GetConfig(d.Connection)
 
 	if osqueryConfig.Username == nil {
@@ -32,6 +34,8 @@ func getSSHConnection(ctx context.Context, d *plugin.QueryData, hostname string,
 		Auth:            []ssh.AuthMethod{},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
+
+	//plugin.Logger(ctx).Debug("SSH configuration", "json", toYAML(sshConfig))
 
 	if osqueryConfig.Password != nil {
 		plugin.Logger(ctx).Debug("authenticating SSH connection with username/password", "username", *osqueryConfig.Username, "password", *osqueryConfig.Password)
@@ -51,6 +55,8 @@ func getSSHConnection(ctx context.Context, d *plugin.QueryData, hostname string,
 		sshConfig.Auth = append(sshConfig.Auth, ssh.PublicKeys(signer))
 	}
 
+	//plugin.Logger(ctx).Debug("SSH configuration (with password)", "json", toYAML(sshConfig))
+
 	// TODO: fix port!!!
 	client, err := ssh.Dial("tcp", hostname+":22", sshConfig)
 	if err != nil {
@@ -58,9 +64,11 @@ func getSSHConnection(ctx context.Context, d *plugin.QueryData, hostname string,
 		return nil, fmt.Errorf("error dialing target %s: %w", hostname, err)
 	}
 
+	plugin.Logger(ctx).Debug("remote host dialled")
+
 	// save to cache
 	plugin.Logger(ctx).Debug("saving SSH connection to cache")
 	d.ConnectionManager.Cache.Set(SSHConnection+hostname, client)
 
-	return nil, nil
+	return client, nil
 }

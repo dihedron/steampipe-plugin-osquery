@@ -3,7 +3,7 @@ connection "osquery" {
     plugin    = "local/osquery"
     # authentication info
     username = "developer"
-    # password = ""
-    private_key = "/home/developer/.ssh/id_ed25519"
+    password = "my-s3cr3t-p4ssw0rd!"
+    # private_key = "/home/developer/.ssh/id_ed25519"
     trace_level = "TRACE"
 }

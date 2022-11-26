@@ -6,7 +6,7 @@ import (
 	"errors"
 
 	"github.com/hashicorp/go-hclog"
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"gopkg.in/yaml.v3"
 )
 
