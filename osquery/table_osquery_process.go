@@ -1,9 +1,7 @@
 package osquery
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
@@ -193,7 +191,7 @@ func tableOSQueryProcess(_ context.Context) *plugin.Table {
 			},
 		},
 		List: &plugin.ListConfig{
-			Hydrate: listOSQueryProcess,
+			Hydrate: makeListOSQuery[*osQueryProcess]("select * from processes;"),
 			KeyColumns: plugin.KeyColumnSlice{
 				&plugin.KeyColumn{
 					Name:    "hostname",
@@ -202,56 +200,6 @@ func tableOSQueryProcess(_ context.Context) *plugin.Table {
 			},
 		},
 	}
-}
-
-//// LIST FUNCTIONS
-
-func listOSQueryProcess(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-
-	setLogLevel(ctx, d)
-
-	hostname := d.EqualsQuals["hostname"].GetStringValue()
-	plugin.Logger(ctx).Debug("retrieving list of processes", "hostname", hostname)
-
-	connection, err := getSSHConnection(ctx, d, hostname, false)
-	if err != nil {
-		plugin.Logger(ctx).Error("error retrieving connection", "error", err)
-		return nil, err
-	}
-
-	plugin.Logger(ctx).Debug("connection retrieved")
-
-	session, err := connection.NewSession()
-	if err != nil {
-		plugin.Logger(ctx).Error("error creating session", "error", err)
-		return nil, err
-	}
-	defer session.Close()
-
-	plugin.Logger(ctx).Debug("session open")
-
-	var output bytes.Buffer
-	session.Stdout = &output
-	command := `osqueryi --json "select * from processes;"`
-	if err := session.Run(command); err != nil {
-		plugin.Logger(ctx).Error("error running query", "command", command, "error", err)
-		return nil, err
-	}
-
-	plugin.Logger(ctx).Debug("command run")
-
-	processes := []osQueryProcess{}
-	if err = json.Unmarshal(output.Bytes(), &processes); err != nil {
-		plugin.Logger(ctx).Error("error unmarshalling query result", "error", err)
-		return nil, err
-	}
-
-	for _, p := range processes {
-		p.Hostname = hostname
-		plugin.Logger(ctx).Debug("streaming process", "data", toPrettyJSON(&p))
-		d.StreamListItem(ctx, p)
-	}
-	return nil, nil
 }
 
 type osQueryProcess struct {
@@ -283,4 +231,8 @@ type osQueryProcess struct {
 	Threads          string `json:"threads"`
 	Nice             string `json:"nice"`
 	CgroupPath       string `json:"cgroup_path"`
+}
+
+func (o *osQueryProcess) SetHostName(hostname string) {
+	o.Hostname = hostname
 }
