@@ -2,6 +2,7 @@ package osquery
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -26,12 +27,28 @@ func SafeInt(def int) func(context.Context, *transform.TransformData) (interface
 }
 
 func EpochToDate(ctx context.Context, d *transform.TransformData) (interface{}, error) {
-	if d.Value == nil || d.Value.(string) == "" {
+	var err error
+	if d.Value == nil {
 		return "", nil
 	}
-	if secs, err := strconv.Atoi(d.Value.(string)); err != nil {
-		return "", err
-	} else {
-		return time.Unix(int64(secs), 0), nil
+	switch t := d.Value.(type) {
+	case string:
+		if t == "" {
+			return "", nil
+		}
+		if secs, err := strconv.Atoi(t); err != nil {
+			return "", err
+		} else {
+			return time.Unix(int64(secs), 0), nil
+		}
+	case int:
+		return time.Unix(int64(t), 0), nil
+	case int32:
+		return time.Unix(int64(t), 0), nil
+	case int64:
+		return time.Unix(int64(t), 0), nil
+	default:
+		err = fmt.Errorf("invalid type: %T", d.Value)
 	}
+	return nil, err
 }

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/dihedron/steampipe-plugin-utils/utils"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
@@ -56,7 +57,7 @@ func makeListOSQuery[T OSQueryResult](query string) func(context.Context, *plugi
 
 		for _, item := range items {
 			item.SetHostName(hostname)
-			plugin.Logger(ctx).Debug("streaming items", "data", toPrettyJSON(item))
+			plugin.Logger(ctx).Debug("streaming items", "data", utils.ToPrettyJSON(item))
 			d.StreamListItem(ctx, item)
 		}
 		return nil, nil

@@ -6,8 +6,9 @@ require (
 	github.com/hashicorp/go-hclog v1.2.2
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.0.0
 	golang.org/x/crypto v0.1.0
-	gopkg.in/yaml.v3 v3.0.1
 )
+
+require gopkg.in/yaml.v3 v3.0.1 // indirect
 
 require (
 	cloud.google.com/go v0.65.0 // indirect
@@ -27,6 +28,7 @@ require (
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/dihedron/steampipe-plugin-utils v0.0.0-20221130145133-21a7bc46a311
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/eko/gocache/v3 v3.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
