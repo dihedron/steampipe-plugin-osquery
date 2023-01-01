@@ -203,7 +203,7 @@ func tableOSQueryProcess(_ context.Context) *plugin.Table {
 }
 
 type osQueryProcess struct {
-	Hostname         string `json:"hostname"`
+	Result
 	PID              string `json:"pid"`
 	Name             string `json:"name"`
 	Path             string `json:"path"`
@@ -231,8 +231,4 @@ type osQueryProcess struct {
 	Threads          string `json:"threads"`
 	Nice             string `json:"nice"`
 	CgroupPath       string `json:"cgroup_path"`
-}
-
-func (o *osQueryProcess) SetHostName(hostname string) {
-	o.Hostname = hostname
 }

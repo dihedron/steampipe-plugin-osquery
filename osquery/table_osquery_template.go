@@ -10,11 +10,19 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-type OSQueryResult interface {
-	SetHostName(hostname string)
+type result interface {
+	setHostname(hostname string)
 }
 
-func makeListOSQuery[T OSQueryResult](query string) func(context.Context, *plugin.QueryData, *plugin.HydrateData) (interface{}, error) {
+type Result struct {
+	Hostname string `json:"hostname"`
+}
+
+func (o *Result) setHostname(hostname string) {
+	o.Hostname = hostname
+}
+
+func makeListOSQuery[T result](query string) func(context.Context, *plugin.QueryData, *plugin.HydrateData) (interface{}, error) {
 
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		setLogLevel(ctx, d)
@@ -56,7 +64,7 @@ func makeListOSQuery[T OSQueryResult](query string) func(context.Context, *plugi
 		}
 
 		for _, item := range items {
-			item.SetHostName(hostname)
+			item.setHostname(hostname)
 			plugin.Logger(ctx).Debug("streaming items", "data", utils.ToPrettyJSON(item))
 			d.StreamListItem(ctx, item)
 		}

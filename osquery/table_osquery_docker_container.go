@@ -186,7 +186,7 @@ func tableOSQueryDockerContainer(_ context.Context) *plugin.Table {
 }
 
 type osQueryDockerContainer struct {
-	Hostname         string `json:"hostname"`
+	Result
 	ID               string `json:"id"`
 	Name             string `json:"name"`
 	Image            string `json:"image"`
@@ -211,8 +211,4 @@ type osQueryDockerContainer struct {
 	PIDNamespace     string `json:"pid_namespace"`
 	UserNamespace    string `json:"user_namespace"`
 	UTSNamespace     string `json:"uts_namespace"`
-}
-
-func (o *osQueryDockerContainer) SetHostName(hostname string) {
-	o.Hostname = hostname
 }

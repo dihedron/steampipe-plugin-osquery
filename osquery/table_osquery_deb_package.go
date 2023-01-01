@@ -8,8 +8,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-//// TABLE DEFINITION
-
+// // TABLE DEFINITION
 func tableOSQueryDebPackage(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "osquery_deb_package",
@@ -101,7 +100,7 @@ func tableOSQueryDebPackage(_ context.Context) *plugin.Table {
 }
 
 type osQueryDebPackage struct {
-	Hostname   string `json:"hostname"`
+	Result
 	Name       string `json:"name"`
 	Version    string `json:"version"`
 	Source     string `json:"source"`
@@ -113,8 +112,4 @@ type osQueryDebPackage struct {
 	Section    string `json:"section"`
 	Priority   string `json:"priority"`
 	AdminDir   string `json:"admindir"`
-}
-
-func (o *osQueryDebPackage) SetHostName(hostname string) {
-	o.Hostname = hostname
 }

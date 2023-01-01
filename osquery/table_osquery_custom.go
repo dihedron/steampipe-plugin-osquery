@@ -52,14 +52,7 @@ func tableOSQueryCustom(_ context.Context) *plugin.Table {
 	}
 }
 
-//// HYDRATE FUNCTIONS
-
-type result struct {
-	Hostname string
-	Query    string
-	Result   string
-}
-
+// // HYDRATE FUNCTIONS
 func getOSQueryCustom(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 
 	setLogLevel(ctx, d)
@@ -103,7 +96,11 @@ func getOSQueryCustom(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrat
 	// 	return nil, err
 	// }
 
-	return &result{
+	return &struct {
+		Hostname string
+		Query    string
+		Result   string
+	}{
 		Hostname: hostname,
 		Query:    query,
 		Result:   output.String(),

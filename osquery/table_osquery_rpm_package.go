@@ -67,13 +67,13 @@ func tableOSQueryRpmPackage(_ context.Context) *plugin.Table {
 				Name:        "epoch",
 				Type:        proto.ColumnType_STRING,
 				Description: "The package epoch.",
-				Transform:   transform.FromField("Epoch"), //.Transform(TrimString),
+				Transform:   transform.FromField("Epoch"),
 			},
 			{
 				Name:        "install_time",
 				Type:        proto.ColumnType_STRING,
 				Description: "The package install time.",
-				Transform:   transform.FromField("InstallTime"), //.Transform(TrimString),
+				Transform:   transform.FromField("InstallTime"),
 			},
 			{
 				Name:        "vendor",
@@ -101,7 +101,7 @@ func tableOSQueryRpmPackage(_ context.Context) *plugin.Table {
 }
 
 type osQueryRpmPackage struct {
-	Hostname     string `json:"hostname"`
+	Result
 	Name         string `json:"name"`
 	Version      string `json:"version"`
 	Release      string `json:"release"`
@@ -113,8 +113,4 @@ type osQueryRpmPackage struct {
 	InstallTime  string `json:"install_time"`
 	Vendor       string `json:"vendor"`
 	PackageGroup string `json:"package_group"`
-}
-
-func (o *osQueryRpmPackage) SetHostName(hostname string) {
-	o.Hostname = hostname
 }
