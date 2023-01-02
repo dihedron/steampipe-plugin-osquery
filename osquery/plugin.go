@@ -17,6 +17,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"osquery_apparmor_event":   tableOSQueryAppArmorEvent(ctx),
 			"osquery_apparmor_profile": tableOSQueryAppArmorProfile(ctx),
 			"osquery_apt_source":       tableOSQueryAptSource(ctx),
+			"osquery_arp_cache":        tableOSQueryArpCache(ctx),
 			"osquery_process":          tableOSQueryProcess(ctx),
 			"osquery_deb_package":      tableOSQueryDebPackage(ctx),
 			"osquery_rpm_package":      tableOSQueryRpmPackage(ctx),
