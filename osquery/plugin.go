@@ -30,6 +30,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"osquery_certificate": tableOSQueryCertificate(ctx),
 			// => chrome_extension_content_scripts
 			// => chrome_extensions
+			"osquery_chrome_extension": tableOSQueryChromeExtension(ctx),
 			// => cpu_info
 			// => cpu_time
 			// => cpuid
